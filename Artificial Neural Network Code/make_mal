@@ -1,0 +1,7 @@
+output: malignancy_train.o
+	gcc -g -o EXE2 malignancy_train.c -lfann -lm 
+malignancy_train.o: malignancy_train.c
+	gcc -g -c malignancy_train.c -lfann -lm
+clean:
+	rm *.o
+	rm EXE

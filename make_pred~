@@ -1,0 +1,7 @@
+output: prediction_train.o
+	gcc -g -o EXE2 prediction_train.o -lm -lfann 
+prediction_train.o: prediction_train.c
+	gcc -g -c prediction_train.c -lfann -lm
+clean:
+	rm *.o
+	rm EXE

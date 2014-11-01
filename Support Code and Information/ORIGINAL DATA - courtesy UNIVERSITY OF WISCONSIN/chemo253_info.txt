@@ -1,0 +1,71 @@
+File:/afs/cs.wisc.edu/p/ftp/math-prog/cpo-dataset/machine-learn/cancer/WPBCC/README
+This directory contains three files:
+
+README (this file)  chemo253.mat  chemo253.txt
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+chemo253.mat
+------------
+This file  can be loaded into MATLAB directly and contains the
+253 x 38 matrix Q. Elements of Q are as follows:
+
+
+      Q(i, 1)  = 0 if non-recur
+               = 1 if recur
+      Q(i, 2)  = time (months) DFS/TTR
+                      DFS : Disease Free Survival (if Q(i, 1)=0)
+                      TTR : Time To Recur (if Q(i, 1)=1)
+      Q(i, 3)  = 0 if death is not caused by cancer or person leaves the group
+               = 1 if death is caused by cancer 
+      Q(i, 4)  = survival time (months) for patients who die, leave or survive
+		 the total time of the study 158 months at December 1997.
+      Q(i, 5:34) = 30 nuclear features
+      Q(i, 35) = Tumor size
+      Q(i, 36) = Lymph node status (number of metastasized lymph nodes: 0 to 30)
+      Q(i, 37) = 1 if patient received first chemotherapy
+               = 0 otherwise
+      Q(i, 38) = 1 if patient received second chemotherapy
+               = 0 otherwise
+
+NOTE: The i-th patient is considered to have received chemotherapy if 
+      either Q(i, 37) = 1 or Q(i, 38) = 1.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+chemo253.txt
+----------
+This file contains patients' nuclear features, survival time and chemotherapy 
+information.  The 39 columns contain the following information:
+
+      1.  Patient's artificially created number i=1,......,253.
+      2.  code_a : Q(i, 1)  = 0 if non-recur, = 1 if recur
+      3.  code_b :  Q(i, 3)  = 0 if death is not caused by cancer or 
+		    person leaves the group
+		    = 1 if death is caused by cancer
+      4.  time_a : Q(i, 2)  = time (months) DFS/TTR 
+		   DFS : Disease Free Survival (if Q(i, 1)=0)
+         	   TTR : Time To Recur (if Q(i, 1)=1)
+      5.  time_b : Q(i, 4)  = survival time (months) for patients who die, 
+		   leave or survive the total time of the study 158 months 
+		   at December 1997.
+      6.  radius
+      7.  texture
+      8.  perimeter
+      9.  area
+     10.  smoothness
+     11.  compactness
+     12.  concavity
+     13.  concave point
+     14.  symmetry
+     15.  fractal dimension
+     16. to 25. Standard devisation of 6. to 15. above
+     26. to 35. Largest (worst) of 6. to 15. above
+     36.  tumor size
+     37.  Q(i, 36) = Lymph node status 
+	  (number of metastasized lymph nodes: 0 to 30)
+    38.   hormo Q(i, 37) = 1 if patient received first chemotherapy
+			 = 0 otherwise
+    39.   chemo Q(i, 38) = 1 if patient received second chemotherapy
+			 = 0 otherwise
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,0 +1,248 @@
+globals 
+[ var1 
+  var2 
+  dose-count
+  ncell-death-count
+  tcell-strength
+  var
+]
+
+turtles-own [ age chem?]
+
+breed [ncells ncell]
+breed [tcells tcell]
+breed [stems stem]
+breed [chemos chemo]
+
+tcells-own [stem?]
+
+;;====================================
+;; END OF DEFINITIONS
+;;====================================
+
+to setup
+  clear-all
+  ask patches [ set pcolor grey * 0.75 + black * 0.25 ]
+  set-default-shape turtles "circle"
+  setup-ncells
+  setup-tcells
+  set var1 0
+  set dose-count 0
+end
+
+to setup-ncells
+  create-ncells 300
+  [ setxy random 100 -10
+    set color pink
+    set heading 90
+    set chem? FALSE
+  ]
+  
+  create-ncells 300
+  [ setxy random 100 -11
+    set color pink
+    set heading 90
+    set chem? FALSE
+  ]
+  
+  create-ncells 300
+  [ setxy random 100 -12
+    set color pink
+    set heading 90
+    set chem? FALSE
+  ]
+  
+  seperate-cells
+  
+  ask ncells
+  [ hatch 1
+    [move-kids]
+  ]
+end 
+
+to move-kids
+  set heading 90
+  fd 1
+  seperate-cells
+end
+
+to setup-tcells
+  create-tcells 1
+  [ setxy 0 0 
+    set color blue
+    set stem? true
+    set age 0
+    set chem? FALSE
+  ]
+end
+
+to setup-chemo
+  create-chemos 2
+  [ setxy random-xcor (max-pycor / 2)
+    set color green
+    set age 0
+  ]
+end
+
+to seperate-cells
+  ask ncells
+  [if any? other ncells-here
+    [die]
+  ]
+end
+
+;;=================================================
+;; END OF SETUP
+;;=================================================
+
+to go
+  ncell-div
+  tcell-action
+  draw-plots
+end
+
+to stem-crt
+  set var2 random malignancy
+  if (var2 < 33) and (var2 > 30)[ make-stem ]
+end
+
+to make-stem
+  create-stems 1 
+  [ set color blue 
+    set chem? FALSE]
+  move-stem
+end
+
+to move-stem
+  ask stems
+  [ set heading 0
+    rt random 90
+    fd 5]
+end
+
+to ncell-div
+  ask ncells
+  [ if ( random dose-count < 5 )
+    [ hatch 1 [ move-kids ]] ]
+end
+
+
+to tcell-action
+  check-var1
+  if (var1 = 0) [ tcell-move ]
+  if (var1 = 1) [ tcell-growth ]
+end
+
+to check-var1
+  ask tcells
+  [ if (any? ncells in-radius 1)
+    [ set var1 1]
+  ]
+end
+
+to tcell-move
+  ask tcells
+  [ ifelse (xcor >= 0)
+    [ set heading 180
+      rt random 90 ]
+    [ set heading 90
+      rt random 90 ]
+    fd 1
+  ]
+end
+
+to tcell-growth
+  ask tcells
+  [
+    set age age + 1
+    set heading 90
+    lt random 180
+    move-trans-cells
+    mitosis
+    death
+  ]
+  stem-crt
+end
+
+to move-trans-cells
+  if (not stem?)
+  [ set color ( red + 0.10 * age)
+    ;;set heading 90
+    ;;lt random 180
+    fd 1
+    if (age < 6)
+    [ hatch 10
+      [ fd 1 
+        mitosis]
+    ]
+  ]
+end
+
+to mitosis
+  if stem?
+  [ hatch 10
+    [ fd 1
+      set color red
+      set stem? false
+      set age 16
+    ]
+  ]
+end
+
+to death
+  if (not stem?) and (age >= malignancy / 10 + 30 - 0.1 * dose-count)
+  [die]
+end
+
+;;====================================================
+;; END OF TUMOR ACTION
+;;====================================================   
+
+
+to chemo-dose
+  ask chemos
+  [ ifelse (xcor >= 0)
+     [ set heading 180
+       rt random 90 ]
+     [ set heading 90
+       rt random 90 ]
+  ]
+  kill-cells
+  kill-chemo
+end
+
+to kill-cells
+  ask chemos
+  [ ifelse any? tcells-here 
+    [ set var random 100
+      if (var > malignancy) [ask tcells in-radius 1 [die] ]
+      set age age + 1
+      set dose-count dose-count + 1
+    ]
+    [ ifelse any? ncells-here
+      [ ask ncells in-radius 1 [die]
+        set age age + 2
+        set dose-count dose-count + 2
+        set ncell-death-count ncell-death-count + 1
+      ]
+      [ fd 1 ]
+    ]
+  ]
+end
+
+to kill-chemo
+  ask chemos
+  [ if (age >= 10) 
+    [ die
+    ]
+  ]
+end
+
+to draw-plots
+  set-current-plot "Cell Count"
+  set-current-plot-pen "No of ncells"
+  plot count ncells
+  set-current-plot-pen "No of tcells"
+  plot count tcells
+  set tcell-strength count tcells / 1.5
+end
